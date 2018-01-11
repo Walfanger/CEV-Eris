@@ -380,6 +380,10 @@ area/space/atmosalert()
 /area/centcom/holding
 	name = "\improper Holding Facility"
 
+/area/testing
+	name = "testing"
+	requires_power = 0
+	dynamic_lighting = 0
 
 /area/testing/first
 	name = "testing one"

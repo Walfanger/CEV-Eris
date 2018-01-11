@@ -204,3 +204,10 @@
 	attack_animation(user)
 	spawn(1) qdel(src)
 	return 1
+
+
+/obj/structure/bullet_act(var/obj/item/projectile/Proj)
+	..()
+	var/proj_force = Proj.get_structure_damage()
+	if(proj_force)
+		world << "[src].bullet_act : damage = [proj_force]"

@@ -1,3 +1,115 @@
+/obj/item/projectile/plasma_charge
+	name = "plasma charge"
+	//icon = "" //TODO
+	icon_state = "plasma" //TODO
+	damage = 60
+	kill_count = 10
+	var/plasma_force = 200
+
+/obj/item/projectile/plasma_charge/Move(var/turf/proj_location)
+	if(plasma_force <= 0)
+		qdel(src)
+		return FALSE
+	. = ..(proj_location)
+	for(var/obj/O in proj_location)
+		on_hit(O)
+		world << "force decreased : [plasma_force]"
+
+/obj/item/projectile/plasma_charge/Bump(atom/A as mob|obj|turf|area, forced=0)
+	world << "[src]/Bump"
+	if(A == src)
+		return FALSE //no
+
+	if(A == firer)
+		loc = A.loc
+		return FALSE //cannot shoot yourself
+
+	if((bumped && !forced) || (A in permutated))
+		return FALSE
+
+	var/passthrough = 0 //if the projectile should continue flying
+	var/distance = get_dist(starting,loc)
+
+	bumped = TRUE
+	world << "Bump checks passed"
+	if(ismob(A))
+		world << "ismob proceeding"
+		var/mob/M = A
+		if(isliving(A))
+			//if they have a neck grab on someone, that person gets hit instead
+			var/obj/item/weapon/grab/G = locate() in M
+			if(G && G.state >= GRAB_NECK)
+				visible_message(SPAN_DANGER("\The [M] uses [G.affecting] as a shield!"))
+				if(Bump(G.affecting, forced=1))
+					return //If Bump() returns 0 (keep going) then we continue on to attack M.
+
+			passthrough = !attack_mob(M, distance)
+		else
+			passthrough = TRUE //so ghosts don't stop bullets
+	else
+		world << "!ismob"
+		passthrough = (A.bullet_act(src, def_zone) == PROJECTILE_CONTINUE) //backwards compatibility
+		if(isturf(A))
+			world << "isturf"
+			for(var/obj/O in A)
+				O.bullet_act(src)
+			for(var/mob/living/M in A)
+				attack_mob(M, distance)
+		world << "end of deleting"
+
+	world << "Bump middle"
+
+	//penetrating projectiles can pass through things that otherwise would not let them
+	if(!passthrough && penetrating > 0)
+		if(check_penetrate(A))
+			passthrough = TRUE
+		penetrating--
+
+	//the bullet passes through a dense object!
+	if(passthrough)
+		//move ourselves onto A so we can continue on our way.
+		if(A)
+			if(istype(A, /turf))
+				loc = A
+			else
+				loc = A.loc
+			permutated.Add(A)
+		bumped = FALSE //reset bumped variable!
+		return FALSE
+
+	//stop flying
+	on_impact(A)
+
+	/*density = FALSE
+	invisibility = 101
+
+	qdel(src)*/ //do not delete it after bumping solid objects
+	return TRUE
+
+/obj/item/projectile/plasma_charge/get_structure_damage()
+	if(plasma_force > 0)
+		world << "proj's force - [plasma_force]"
+		return plasma_force
+	else
+		return 0
+
+/obj/item/projectile/plasma_charge/on_hit(var/atom/target, var/blocked = 0, var/def_zone = null)
+	world << "[src]/on_hit"
+	if(blocked >= 2)
+		return 0//Full block
+	plasma_force -= 40
+	qdel(target)
+	return 1
+
+/obj/item/projectile/plasma_charge/on_impact(var/atom/A)
+	impact_effect(effect_transform)		// generate impact effect
+	playsound(src, "hitsound_wall", 50, 1, -2)
+	world << "solid obj damaged"
+	plasma_force -= 100
+	qdel(A)
+	world << "[src]/on_impact. damage = [src.get_structure_damage()]"
+	return
+
 /obj/item/projectile/bullet
 	name = "bullet"
 	icon_state = "bullet"

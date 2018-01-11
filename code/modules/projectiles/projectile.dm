@@ -276,6 +276,8 @@
 /obj/item/projectile/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	return 1
 
+
+
 /obj/item/projectile/process()
 	var/first_step = 1
 
@@ -299,11 +301,13 @@
 
 		before_move()
 		Move(location.return_turf())
+		world << "[src].move! kill_count = [kill_count]"
 
 		if(!bumped && !isturf(original))
 			if(loc == get_turf(original))
 				if(!(original in permutated))
 					if(Bump(original))
+						world << "Bump(original)"
 						return
 
 		if(first_step)

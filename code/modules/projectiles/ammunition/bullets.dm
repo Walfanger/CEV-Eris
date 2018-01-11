@@ -198,3 +198,11 @@
 	caliber = "caps"
 	color = "#FF0000"
 	projectile_type = /obj/item/projectile/bullet/cap
+
+/obj/item/ammo_casing/plasma_casing
+	name = "123"
+	desc = "456"
+	icon_state = "slshell"
+	spent_icon = "slshell-spent"
+	caliber = "shotgun"
+	projectile_type = /obj/item/projectile/plasma_charge
