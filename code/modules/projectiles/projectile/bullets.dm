@@ -1,19 +1,83 @@
+#define TOTAL_FUCKING_POWER     200
+#define WALL_FUCKING_PRICE      100
+#define MACHINERY_FUCKING_PRICE 80
+#define STRUCTURE_FUCKING_PRICE 60
+#define ITEM_FUCKING_PRICE      40
+
 /obj/item/projectile/plasma_charge
 	name = "plasma charge"
 	//icon = "" //TODO
 	icon_state = "plasma" //TODO
 	damage = 60
-	kill_count = 10
-	var/plasma_force = 200
+	kill_count = 5//how much turfs can cross this projectile befor get fucked
+	var/plasma_force = TOTAL_FUCKING_POWER
 
-/obj/item/projectile/plasma_charge/Move(var/turf/proj_location)
-	if(plasma_force <= 0)
-		qdel(src)
+
+/obj/item/projectile/plasma_charge/proc/check_plasma_force()
+	if(plasma_force >= 0)
+		return TRUE
+	else
 		return FALSE
-	. = ..(proj_location)
-	for(var/obj/O in proj_location)
-		on_hit(O)
-		world << "force decreased : [plasma_force]"
+
+/obj/item/projectile/plasma_charge/get_structure_damage()
+	if(check_plasma_force())
+		world << "proj's force - [plasma_force]"
+		return plasma_force
+	else
+		return FALSE
+
+/obj/item/projectile/plasma_charge/on_hit(var/atom/target, var/blocked = 0, var/def_zone = null)
+	world << "[src]/on_hit"
+
+	try_dismantle(target)
+	world << "force decreased : [plasma_force]"
+	return TRUE
+
+
+/obj/item/projectile/plasma_charge/on_impact(var/atom/A)
+	impact_effect(effect_transform)		// generate impact effect
+	playsound(src, "hitsound_wall", 50, 1, -2)
+	try_dismantle(A)
+	world << "[src]/on_impact. damage = [src.get_structure_damage()]"
+	return
+
+/obj/item/projectile/plasma_charge/proc/try_dismantle(var/atom/A)
+	world << "try_dismantle"
+	if(!check_plasma_force())
+		return
+
+	if(istype(A, /obj/item))
+		world << "is item"
+		if(!plasma_force > ITEM_FUCKING_PRICE)
+			return
+		qdel(A)
+		plasma_force -= ITEM_FUCKING_PRICE
+		kill_count--
+		return
+	else if(istype(A, /obj/structure))
+		world << "is structure"
+		if(!plasma_force > STRUCTURE_FUCKING_PRICE)
+			return
+		qdel(A)//A.bullet_act(src)//get shot or qdeling it
+		plasma_force -= STRUCTURE_FUCKING_PRICE
+		kill_count--
+		return
+	else if(istype(A, /obj/machinery))
+		world << "is machinery"
+		if(!plasma_force > MACHINERY_FUCKING_PRICE)
+			return
+		qdel(A)
+		plasma_force -= MACHINERY_FUCKING_PRICE
+		kill_count -= 2
+	else if(iswall(A))
+		world << "is wall"
+		if(!plasma_force > WALL_FUCKING_PRICE)
+			return
+		var/turf/simulated/wall/W = A
+		W.dismantle_wall(1)
+		plasma_force -= WALL_FUCKING_PRICE
+		kill_count -= 2
+		return
 
 /obj/item/projectile/plasma_charge/Bump(atom/A as mob|obj|turf|area, forced=0)
 	world << "[src]/Bump"
@@ -80,35 +144,13 @@
 	//stop flying
 	on_impact(A)
 
+	if(plasma_force <= 0)
+		qdel(src)
 	/*density = FALSE
 	invisibility = 101
 
 	qdel(src)*/ //do not delete it after bumping solid objects
 	return TRUE
-
-/obj/item/projectile/plasma_charge/get_structure_damage()
-	if(plasma_force > 0)
-		world << "proj's force - [plasma_force]"
-		return plasma_force
-	else
-		return 0
-
-/obj/item/projectile/plasma_charge/on_hit(var/atom/target, var/blocked = 0, var/def_zone = null)
-	world << "[src]/on_hit"
-	if(blocked >= 2)
-		return 0//Full block
-	plasma_force -= 40
-	qdel(target)
-	return 1
-
-/obj/item/projectile/plasma_charge/on_impact(var/atom/A)
-	impact_effect(effect_transform)		// generate impact effect
-	playsound(src, "hitsound_wall", 50, 1, -2)
-	world << "solid obj damaged"
-	plasma_force -= 100
-	qdel(A)
-	world << "[src]/on_impact. damage = [src.get_structure_damage()]"
-	return
 
 /obj/item/projectile/bullet
 	name = "bullet"
