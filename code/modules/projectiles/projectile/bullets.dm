@@ -1,3 +1,4 @@
+#define TOTAL_HUMAN_DAMAGE      60
 #define TOTAL_FUCKING_POWER     200
 #define WALL_FUCKING_PRICE      100
 #define MACHINERY_FUCKING_PRICE 80
@@ -8,9 +9,22 @@
 	name = "plasma charge"
 	//icon = "" //TODO
 	icon_state = "plasma" //TODO
-	damage = 60
-	kill_count = 5//how much turfs can cross this projectile befor get fucked
+	damage = TOTAL_HUMAN_DAMAGE
+	kill_count = 4//how much turfs can cross this projectile befor get fucked
 	var/plasma_force = TOTAL_FUCKING_POWER
+
+/obj/item/projectile/plasma_charge/Move(new_loc)
+	world << "[src]/move([new_loc])"
+	. = ..(new_loc)
+	var/turf/A = new_loc
+	var/distance = get_dist(starting,loc)
+
+	if(isturf(A))
+		world << "isturf"
+		for(var/obj/O in A)
+			O.bullet_act(src)
+		for(var/mob/living/M in A)
+			attack_mob(M, distance)
 
 
 /obj/item/projectile/plasma_charge/proc/check_plasma_force()
@@ -113,13 +127,12 @@
 	else
 		world << "!ismob"
 		passthrough = (A.bullet_act(src, def_zone) == PROJECTILE_CONTINUE) //backwards compatibility
-		if(isturf(A))
+/*		if(isturf(A))
 			world << "isturf"
 			for(var/obj/O in A)
 				O.bullet_act(src)
 			for(var/mob/living/M in A)
-				attack_mob(M, distance)
-		world << "end of deleting"
+				attack_mob(M, distance)*/
 
 	world << "Bump middle"
 
