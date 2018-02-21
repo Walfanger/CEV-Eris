@@ -1,4 +1,4 @@
-#define TOTAL_HUMAN_DAMAGE      60
+#define HUMAN_FUCKING_POWER     60 //damn this macros are so good
 #define TOTAL_FUCKING_POWER     200
 #define WALL_FUCKING_PRICE      100
 #define MACHINERY_FUCKING_PRICE 80
@@ -9,8 +9,8 @@
 	name = "plasma charge"
 	//icon = "" //TODO
 	icon_state = "plasma" //TODO
-	damage = TOTAL_HUMAN_DAMAGE
-	kill_count = 5//how much turfs can cross this projectile befor get fucked
+	damage = HUMAN_FUCKING_POWER
+	kill_count = 6//how much turfs can cross this projectile befor get fucked by gc
 	var/plasma_force = TOTAL_FUCKING_POWER
 
 /obj/item/projectile/plasma_charge/Move(new_loc)
@@ -58,6 +58,7 @@
 /obj/item/projectile/plasma_charge/proc/try_dismantle(var/atom/A)
 	world << "try_dismantle"
 	if(!check_plasma_force())
+		qdel(src)//i am not sure if i am need it, but why not
 		return
 
 	if(istype(A, /obj/item))
@@ -74,7 +75,7 @@
 			return
 		qdel(A)//A.bullet_act(src)//get shot or qdeling it
 		plasma_force -= STRUCTURE_FUCKING_PRICE
-		kill_count--
+		kill_count -=2 //heavy shit
 		return
 	else if(istype(A, /obj/machinery))
 		world << "is machinery"
@@ -82,7 +83,7 @@
 			return
 		qdel(A)
 		plasma_force -= MACHINERY_FUCKING_PRICE
-		kill_count -= 2
+		kill_count -= 2//machines are heavy
 	else if(iswall(A))
 		world << "is wall"
 		if(!plasma_force > WALL_FUCKING_PRICE)
@@ -90,7 +91,7 @@
 		var/turf/simulated/wall/W = A
 		W.dismantle_wall(1)
 		plasma_force -= WALL_FUCKING_PRICE
-		kill_count -= 2
+		kill_count -= 3//walls are heavy too
 		return
 
 /obj/item/projectile/plasma_charge/Bump(atom/A as mob|obj|turf|area, forced=0)
