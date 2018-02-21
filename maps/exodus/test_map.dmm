@@ -19,7 +19,7 @@
 "s" = (/obj/landmark/join/late,/turf/simulated/floor,/area/testing/first)
 "t" = (/obj/structure/cable{d1 = 1; d2 = 2; icon_state = "1-2"; pixel_y = 0},/obj/machinery/light{dir = 4},/turf/simulated/floor,/area/testing/first)
 "u" = (/obj/structure/closet,/turf/simulated/floor,/area/testing/first)
-"v" = (/obj/structure/closet/crate,/obj/item/weapon/weldingtool,/turf/simulated/floor,/area/testing/first)
+"v" = (/obj/structure/closet/crate,/turf/simulated/floor,/area/testing/first)
 "w" = (/obj/structure/closet/crate/secure/bin,/turf/simulated/floor,/area/testing/first)
 "x" = (/obj/structure/cable{d1 = 1; d2 = 2; icon_state = "1-2"; pixel_y = 0},/obj/item/ammo_casing/plasma_casing,/turf/simulated/floor,/area/testing/first)
 "y" = (/obj/machinery/light{icon_state = "tube1"; dir = 8},/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/obj/item/clothing/mask/balaclava,/turf/simulated/floor,/area/testing/first)
@@ -248,6 +248,7 @@ aaaaabNNNNNNNNbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaabNNNNNNNNbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaabNNNNVNNNbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaabbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

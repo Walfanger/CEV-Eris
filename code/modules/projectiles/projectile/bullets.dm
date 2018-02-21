@@ -10,7 +10,7 @@
 	//icon = "" //TODO
 	icon_state = "plasma" //TODO
 	damage = TOTAL_HUMAN_DAMAGE
-	kill_count = 4//how much turfs can cross this projectile befor get fucked
+	kill_count = 5//how much turfs can cross this projectile befor get fucked
 	var/plasma_force = TOTAL_FUCKING_POWER
 
 /obj/item/projectile/plasma_charge/Move(new_loc)
