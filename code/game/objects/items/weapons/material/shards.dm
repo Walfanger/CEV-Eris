@@ -47,8 +47,8 @@
 		alpha = 255
 
 /obj/item/weapon/material/shard/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if(istype(W, /obj/item/weapon/weldingtool) && material.shard_can_repair)
-		var/obj/item/weapon/weldingtool/WT = W
+	if(istype(W, /obj/item/weapon/tool/weldingtool) && material.shard_can_repair)
+		var/obj/item/weapon/tool/weldingtool/WT = W
 		if(WT.remove_fuel(0, user))
 			material.place_sheet(loc)
 			qdel(src)
@@ -80,7 +80,7 @@
 				var/picked = pick(check)
 				var/obj/item/organ/external/affecting = H.get_organ(picked)
 				if(affecting)
-					if(affecting.status & ORGAN_ROBOT)
+					if(affecting.robotic >= ORGAN_ROBOT)
 						return
 					if(affecting.take_damage(5, 0))
 						H.UpdateDamageIcon()

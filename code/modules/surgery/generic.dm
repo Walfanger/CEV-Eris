@@ -17,15 +17,15 @@
 			return 0
 		if (affected.is_stump())
 			return 0
-		if (affected.status & ORGAN_ROBOT)
+		if (affected.robotic >= ORGAN_ROBOT)
 			return 0
 		return 1
 
 /datum/surgery_step/generic/cut_with_laser
 	allowed_tools = list(
-	/obj/item/weapon/scalpel/laser3 = 95, \
-	/obj/item/weapon/scalpel/laser2 = 85, \
-	/obj/item/weapon/scalpel/laser1 = 75, \
+	/obj/item/weapon/tool/scalpel/laser3 = 95, \
+	/obj/item/weapon/tool/scalpel/laser2 = 85, \
+	/obj/item/weapon/tool/scalpel/laser1 = 75, \
 	/obj/item/weapon/melee/energy/sword = 5
 	)
 	priority = 2
@@ -51,8 +51,8 @@
 		//Could be cleaner ...
 		affected.open = 1
 
-		if(istype(target) && !(target.species.flags & NO_BLOOD))
-			affected.status |= ORGAN_BLEEDING
+		if(istype(target))
+			affected.setBleeding()
 
 		affected.createwound(CUT, 1)
 		affected.clamp()
@@ -67,7 +67,7 @@
 
 /datum/surgery_step/generic/incision_manager
 	allowed_tools = list(
-	/obj/item/weapon/scalpel/manager = 100
+	/obj/item/weapon/tool/scalpel/manager = 100
 	)
 	priority = 2
 	min_duration = 80
@@ -91,8 +91,8 @@
 		"\blue You have constructed a prepared incision on and within [target]'s [affected.name] with \the [tool].",)
 		affected.open = 1
 
-		if(istype(target) && !(target.species.flags & NO_BLOOD))
-			affected.status |= ORGAN_BLEEDING
+		if(istype(target))
+			affected.setBleeding()
 
 		affected.createwound(CUT, 1)
 		affected.clamp()
@@ -107,7 +107,7 @@
 
 /datum/surgery_step/generic/cut_open
 	allowed_tools = list(
-	/obj/item/weapon/scalpel = 100,		\
+	/obj/item/weapon/tool/scalpel = 100,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
 	)
@@ -133,8 +133,8 @@
 		"\blue You have made an incision on [target]'s [affected.name] with \the [tool].",)
 		affected.open = 1
 
-		if(istype(target) && !(target.species.flags & NO_BLOOD))
-			affected.status |= ORGAN_BLEEDING
+		if(istype(target))
+			affected.setBleeding()
 		playsound(target.loc, 'sound/weapons/bladeslice.ogg', 50, 1)
 
 		affected.createwound(CUT, 1)
@@ -147,7 +147,7 @@
 
 /datum/surgery_step/generic/clamp_bleeders
 	allowed_tools = list(
-	/obj/item/weapon/hemostat = 100,	\
+	/obj/item/weapon/tool/hemostat = 100,	\
 	/obj/item/stack/cable_coil = 75, 	\
 	/obj/item/device/assembly/mousetrap = 20
 	)
@@ -182,8 +182,8 @@
 
 /datum/surgery_step/generic/retract_skin
 	allowed_tools = list(
-	/obj/item/weapon/retractor = 100, 	\
-	/obj/item/weapon/crowbar = 75,	\
+	/obj/item/weapon/tool/retractor = 100, 	\
+	/obj/item/weapon/tool/crowbar = 75,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 50
 	)
 
@@ -237,10 +237,10 @@
 
 /datum/surgery_step/generic/cauterize
 	allowed_tools = list(
-	/obj/item/weapon/cautery = 100,			\
-	/obj/item/clothing/mask/smokable/cigarette = 75,	\
-	/obj/item/weapon/flame/lighter = 50,			\
-	/obj/item/weapon/weldingtool = 25
+	/obj/item/weapon/tool/cautery = 100,
+	/obj/item/clothing/mask/smokable/cigarette = 75,
+	/obj/item/weapon/flame/lighter = 50,
+	/obj/item/weapon/tool/weldingtool = 25
 	)
 
 	min_duration = 70
@@ -264,7 +264,7 @@
 		"\blue You cauterize the incision on [target]'s [affected.name] with \the [tool].")
 		affected.open = 0
 		affected.germ_level = 0
-		affected.status &= ~ORGAN_BLEEDING
+		affected.stopBleeding()
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -274,7 +274,7 @@
 
 /datum/surgery_step/generic/amputate
 	allowed_tools = list(
-	/obj/item/weapon/circular_saw = 100, \
+	/obj/item/weapon/tool/circular_saw = 100, \
 	/obj/item/weapon/material/hatchet = 75
 	)
 

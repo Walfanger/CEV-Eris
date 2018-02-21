@@ -147,6 +147,18 @@ var/global/list/modifications_types = list(
 	short_name = "M: [name]"
 	name = "Mutation: [name]"
 
+////Organ Modules////
+/datum/body_modification/limb/organ_module
+	replace_limb = null
+	var/module_type = null
+
+/datum/body_modification/limb/organ_module/create_organ(var/mob/living/carbon/holder, var/datum/organ_description/OD, var/color)
+	var/obj/item/organ/external/E = ..()
+	if(module_type)
+		var/obj/item/organ_module/OM = new module_type()
+		OM.install(E)
+	return E
+
 ////Internals////
 
 /datum/body_modification/organ/create_organ(var/mob/living/carbon/holder, var/organ, var/color)
@@ -164,7 +176,6 @@ var/global/list/modifications_types = list(
 
 /datum/body_modification/organ/assisted/create_organ(var/mob/living/carbon/holder, var/O, var/color)
 	var/obj/item/organ/I = ..(holder,O,color)
-	I.status = ORGAN_ASSISTED
 	I.robotic = ORGAN_ASSISTED
 	I.min_bruised_damage = 15
 	I.min_broken_damage = 35
@@ -179,7 +190,7 @@ var/global/list/modifications_types = list(
 
 /datum/body_modification/organ/robotize_organ/create_organ(var/mob/living/carbon/holder, O, color)
 	var/obj/item/organ/I = ..(holder,O,color)
-	I.status = ORGAN_ROBOT
+	I.robotic = ORGAN_ROBOT
 	if(istype(I, /obj/item/organ/internal/eyes))
 		var/obj/item/organ/internal/eyes/E = I
 		E.robo_color = iscolor(color) ? color : "#FFFFFF"

@@ -10,13 +10,13 @@
 		if (!hasorgans(target))
 			return 0
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		if (!affected || (affected.status & ORGAN_ROBOT))
+		if (!affected || (affected.robotic >= ORGAN_ROBOT))
 			return 0
 		return target_zone == "mouth"
 
 /datum/surgery_step/generic/cut_face
 	allowed_tools = list(
-	/obj/item/weapon/scalpel = 100,		\
+	/obj/item/weapon/tool/scalpel = 100,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
 	)
@@ -46,7 +46,7 @@
 
 /datum/surgery_step/face/mend_vocal
 	allowed_tools = list(
-	/obj/item/weapon/hemostat = 100, 	\
+	/obj/item/weapon/tool/hemostat = 100, 	\
 	/obj/item/stack/cable_coil = 75, 	\
 	/obj/item/device/assembly/mousetrap = 10	//I don't know. Don't ask me. But I'm leaving it because hilarity.
 	)
@@ -74,8 +74,8 @@
 
 /datum/surgery_step/face/fix_face
 	allowed_tools = list(
-	/obj/item/weapon/retractor = 100, 	\
-	/obj/item/weapon/crowbar = 55,	\
+	/obj/item/weapon/tool/retractor = 100, 	\
+	/obj/item/weapon/tool/crowbar = 55,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 75)
 
 	min_duration = 80
@@ -102,10 +102,10 @@
 
 /datum/surgery_step/face/cauterize
 	allowed_tools = list(
-	/obj/item/weapon/cautery = 100,			\
+	/obj/item/weapon/tool/cautery = 100,			\
 	/obj/item/clothing/mask/smokable/cigarette = 75,	\
 	/obj/item/weapon/flame/lighter = 50,			\
-	/obj/item/weapon/weldingtool = 25
+	/obj/item/weapon/tool/weldingtool = 25
 	)
 
 	min_duration = 70
@@ -124,7 +124,7 @@
 		user.visible_message("\blue [user] cauterizes the incision on [target]'s face and neck with \the [tool].", \
 		"\blue You cauterize the incision on [target]'s face and neck with \the [tool].")
 		affected.open = 0
-		affected.status &= ~ORGAN_BLEEDING
+		affected.stopBleeding()
 		if (target.op_stage.face == 3)
 			var/obj/item/organ/external/head/h = affected
 			h.disfigured = 0

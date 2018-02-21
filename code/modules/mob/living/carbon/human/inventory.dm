@@ -21,6 +21,44 @@ This saves us from having to call add_fingerprint() any time something is put in
 		else
 			H << "\red You are unable to equip that."
 
+//Puts the item into our active hand if possible. returns 1 on success.
+/mob/living/carbon/human/put_in_active_hand(var/obj/item/W)
+	return (hand ? put_in_l_hand(W) : put_in_r_hand(W))
+
+//Puts the item into our inactive hand if possible. returns 1 on success.
+/mob/living/carbon/human/put_in_inactive_hand(var/obj/item/W)
+	return (hand ? put_in_r_hand(W) : put_in_l_hand(W))
+
+/mob/living/carbon/human/put_in_hands(var/obj/item/W)
+	if(!W)
+		return FALSE
+	if(put_in_active_hand(W) || put_in_inactive_hand(W))
+		return TRUE
+	else
+		return ..()
+
+/mob/living/carbon/human/put_in_l_hand(var/obj/item/W)
+	if(!..())
+		return 0
+	W.add_fingerprint(src)
+	return 1
+
+/mob/living/carbon/human/put_in_r_hand(var/obj/item/W)
+	if(!..())
+		return 0
+	W.add_fingerprint(src)
+	return 1
+
+
+//Find HUD position on screen
+/mob/living/carbon/human/proc/find_inv_position(var/slot_id)
+	for(var/obj/screen/inventory/HUDinv in HUDinventory)
+		if (HUDinv.slot_id == slot_id)
+			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
+	log_admin("[src] try find_inv_position a [slot_id], but not have that slot!")
+	src << "Some problem hase accure, change UI style pls or call admins."
+	return "7,7"
+
 /mob/living/carbon/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = 1)
 	for (var/slot in slots)
 		if (equip_to_slot_if_possible(W, slots[slot], del_on_fail = 0))
@@ -171,6 +209,19 @@ This saves us from having to call add_fingerprint() any time something is put in
 	update_action_buttons()
 	return 1
 
+/mob/living/carbon/human/proc/get_active_hand_organ()
+	if(hand)
+		return get_organ(BP_L_HAND)
+	else
+		return get_organ(BP_R_HAND)
+
+/mob/living/carbon/human/proc/get_holding_hand(var/obj/item/W)
+	switch(get_inventory_slot(W))
+		if(slot_l_hand)
+			return BP_L_HAND
+		if(slot_r_hand)
+			return BP_R_HAND
+
 
 
 //This is an UNSAFE proc. Use mob_can_equip() before calling this one! Or rather use equip_to_slot_if_possible() or advanced_equip_to_slot_if_possible()
@@ -181,6 +232,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if(!istype(W)) return
 	if(!has_organ_for_slot(slot)) return
 	if(!species || !species.hud || !(slot in species.hud.equip_slots)) return
+	if(ismob(W.loc))
+		var/mob/M = W.loc
+		if(M.get_inventory_slot(W) && !M.unEquip(W, src))
+			return
 	W.forceMove(src)
 	switch(slot)
 		if(slot_back)
@@ -221,18 +276,15 @@ This saves us from having to call add_fingerprint() any time something is put in
 			src.l_ear = W
 			if(l_ear.slot_flags & SLOT_TWOEARS)
 				var/obj/item/clothing/ears/offear/O = new(W)
-				O.forceMove(src)
-				src.r_ear = O
-				O.layer = 20
+				equip_to_slot_if_possible(O, slot_r_ear, TRUE, FALSE, FALSE)
 			W.equipped(src, slot)
 			update_inv_ears(redraw_mob)
+
 		if(slot_r_ear)
 			src.r_ear = W
 			if(r_ear.slot_flags & SLOT_TWOEARS)
 				var/obj/item/clothing/ears/offear/O = new(W)
-				O.forceMove(src)
-				src.l_ear = O
-				O.layer = 20
+				equip_to_slot_if_possible(O, slot_l_ear, TRUE, FALSE, FALSE)
 			W.equipped(src, slot)
 			update_inv_ears(redraw_mob)
 		if(slot_glasses)
@@ -290,13 +342,8 @@ This saves us from having to call add_fingerprint() any time something is put in
 			src << SPAN_DANGER("You are trying to eqip this item to an unsupported inventory slot. If possible, please write a ticket with steps to reproduce. Slot was: [slot]")
 			return
 
-	if((W == src.l_hand) && (slot != slot_l_hand))
-		src.l_hand = null
-		update_inv_l_hand() //So items actually disappear from hands.
-	else if((W == src.r_hand) && (slot != slot_r_hand))
-		src.r_hand = null
-		update_inv_r_hand()
-
+	if(!(slot in list(slot_in_backpack, slot_accessory_buffer)))
+		W.screen_loc = find_inv_position(slot)
 	W.layer = 20
 
 	if(W.action_button_name)
@@ -316,10 +363,12 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if(slot_glasses)
 			covering = src.head
 			check_flags = EYES
+		if(slot_l_ear, slot_r_ear, )
+			covering = src.head
 		if(slot_gloves, slot_w_uniform)
 			covering = src.wear_suit
 
-	if(covering && (covering.body_parts_covered & (I.body_parts_covered|check_flags)))
+	if(covering && (covering.item_flags & COVER_PREVENT_MANIPULATION) && (covering.body_parts_covered & (I.body_parts_covered|check_flags)))
 		user << SPAN_WARNING("\The [covering] is in the way.")
 		return 0
 	return 1

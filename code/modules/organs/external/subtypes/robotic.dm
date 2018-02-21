@@ -4,7 +4,6 @@
 	desc = "A skeletal limb wrapped in pseudomuscles, with a low-conductivity case."
 	dislocated = -1
 	cannot_break = 1
-	status = ORGAN_ROBOT
 	robotic = ORGAN_ROBOT
 	brute_mod = 0.8
 	burn_mod = 0.8
@@ -41,6 +40,9 @@
 /obj/item/organ/external/robotic/update_germs()
 	germ_level = 0
 	return
+
+/obj/item/organ/external/robotic/setBleeding()
+	return FALSE
 
 /obj/item/organ/external/robotic/proc/can_activate()
 	return 1

@@ -89,6 +89,47 @@
 	id = "armour"
 	build_path = /obj/item/robot_parts/robot_component/armour
 
+//Modules ====================================
+
+/datum/design/item/mechfab/modules
+	category = "Prosthesis"
+	materials = list(DEFAULT_WALL_MATERIAL = 6000)
+	req_tech = list(TECH_BIO = 3)
+
+/datum/design/item/mechfab/modules/armor
+	name = "Subdermal body armor"
+	build_path = /obj/item/organ_module/armor
+	id = "organ_mod_armor_body"
+	req_tech = list(TECH_BIO = 3, TECH_MATERIAL = 3)
+
+/datum/design/item/mechfab/modules/armblade
+	name = "embed handblade"
+	build_path = /obj/item/organ_module/active/simple/armblade
+	id = "organ_mod_armblade"
+	materials = list(DEFAULT_WALL_MATERIAL = 8000)
+	req_tech = list(TECH_BIO = 3, TECH_MATERIAL = 3)
+
+/datum/design/item/mechfab/modules/runner
+	name = "Mechanical muscules"
+	build_path = /obj/item/organ_module/muscule
+	id = "organ_mod_runner"
+	req_tech = list(TECH_BIO = 4)
+
+
+/datum/design/item/mechfab/modules/multitool
+	materials = list(DEFAULT_WALL_MATERIAL = 18000)
+
+/datum/design/item/mechfab/modules/multitool/surgial
+	build_path = /obj/item/organ_module/active/multitool/surgial
+	name = "Surgial organ module"
+	id = "organ_mod_surgial"
+	req_tech = list(TECH_BIO = 4)
+
+/datum/design/item/mechfab/modules/multitool/engineer
+	build_path = /obj/item/organ_module/active/multitool/engineer
+	name = "Technomancer organ module"
+	id = "organ_mod_eng"
+	req_tech = list(TECH_BIO = 3, TECH_ENGINEERING = 3)
 
 //Prosthesis ====================================
 
@@ -294,14 +335,14 @@
 	name = "Phazon chassis"
 	id = "phazon_chassis"
 	build_path = /obj/item/mecha_parts/chassis/phazon
-	time = 10
+	time = 60
 	materials = list(DEFAULT_WALL_MATERIAL = 25000)
 
 /datum/design/item/mechfab/phazon/torso
 	name = "Phazon torso"
 	id = "phazon_torso"
 	build_path = /obj/item/mecha_parts/part/phazon_torso
-	time = 10
+	time = 120
 	materials = list(DEFAULT_WALL_MATERIAL=35000,"glass"=10000,"plasma"=20000)
 
 /datum/design/item/mechfab/phazon/head
@@ -343,8 +384,8 @@
 	name = "Phazon armour plates"
 	id = "phazon_armour"
 	build_path = /obj/item/mecha_parts/part/phazon_armor
-	time = 20
-	materials = list(DEFAULT_WALL_MATERIAL=20000,"plasma"=10000,"uranium"=10000,"silver"=3000,"diamond"=1000)
+	time = 120
+	materials = list(DEFAULT_WALL_MATERIAL=20000,"plasma"=10000,"uranium"=10000,"silver"=3000,"diamond"=500)
 
 //Durand ======================================================================
 
@@ -550,6 +591,12 @@
 	id = "mech_jetpack"
 	build_path = /obj/item/mecha_parts/mecha_equipment/jetpack
 	materials = list(DEFAULT_WALL_MATERIAL = 5000, "glass" = 5000)
+
+/datum/design/item/mecha/ai_holder
+	name = "AI holder"
+	id = "mech_aiholder"
+	build_path = /obj/item/mecha_parts/mecha_equipment/tool/ai_holder
+	materials = list(DEFAULT_WALL_MATERIAL = 2000, "glass" = 1000)
 
 //obj/item/mecha_parts/mecha_equipment/repair_droid,
 

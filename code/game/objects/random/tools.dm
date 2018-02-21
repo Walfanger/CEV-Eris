@@ -3,11 +3,17 @@
 	icon_state = "tool-grey"
 
 /obj/random/tool/item_to_spawn()
-	return pick(/obj/item/weapon/screwdriver,\
-				/obj/item/weapon/wirecutters,\
-				/obj/item/weapon/weldingtool,\
-				/obj/item/weapon/crowbar,\
-				/obj/item/weapon/wrench,\
+	return pick(/obj/item/weapon/tool/screwdriver,\
+				/obj/item/weapon/tool/screwdriver/electric,\
+				/obj/item/weapon/tool/screwdriver/combi_driver,\
+				/obj/item/weapon/tool/wirecutters,\
+				/obj/item/weapon/tool/weldingtool,\
+				/obj/item/weapon/tool/crowbar,\
+				/obj/item/weapon/tool/wrench,\
+				/obj/item/weapon/tool/big_wrench,\
+				/obj/item/weapon/tool/circular_saw,\
+				/obj/item/weapon/tool/circular_saw/simple,\
+				/obj/item/weapon/tool/circular_saw/advanced,\
 				/obj/item/device/assembly/igniter,\
 				/obj/item/device/assembly/infra,\
 				/obj/item/device/assembly/prox_sensor,\
@@ -43,13 +49,13 @@
 				prob(2);/obj/item/device/export_scanner,\
 				prob(1);/obj/item/device/antibody_scanner,\
 				prob(3);/obj/item/device/destTagger,\
-				prob(3);/obj/item/device/analyzer/plant_analyzer,\
+				prob(3);/obj/item/device/scanner/analyzer/plant_analyzer,\
 				prob(1);/obj/item/weapon/autopsy_scanner,\
-				prob(5);/obj/item/device/healthanalyzer,\
-				prob(1);/obj/item/device/mass_spectrometer,\
+				prob(5);/obj/item/device/scanner/healthanalyzer,\
+				prob(1);/obj/item/device/scanner/mass_spectrometer,\
 				prob(2);/obj/item/device/robotanalyzer,\
 				prob(1);/obj/item/device/gps,\
-				prob(5);/obj/item/device/analyzer)
+				prob(5);/obj/item/device/scanner/analyzer)
 
 /obj/random/technology_scanner/low_chance
 	name = "low chance random scanner"

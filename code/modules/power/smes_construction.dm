@@ -310,7 +310,7 @@
 	if (..())
 
 		// Multitool - change RCON tag
-		if(istype(W, /obj/item/device/multitool))
+		if(istype(W, /obj/item/weapon/tool/multitool))
 			var/newtag = input(user, "Enter new RCON tag. Use \"NO_TAG\" to disable RCON or leave empty to cancel.", "SMES RCON system") as text
 			if(newtag)
 				RCon_tag = newtag
@@ -333,7 +333,7 @@
 			failure_probability = 0
 
 		// Crowbar - Disassemble the SMES.
-		if(istype(W, /obj/item/weapon/crowbar))
+		if(istype(W, /obj/item/weapon/tool/crowbar))
 			if (terminal)
 				user << SPAN_WARNING("You have to disassemble the terminal first!")
 				return

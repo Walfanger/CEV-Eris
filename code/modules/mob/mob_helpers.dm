@@ -17,9 +17,9 @@
 /mob/living/carbon/human/isSynthetic()
 	// If they are 100% robotic, they count as synthetic.
 	for(var/obj/item/organ/external/E in organs)
-		if(!(E.status & ORGAN_ROBOT))
-			return 0
-	return 1
+		if(E.robotic < ORGAN_ROBOT)
+			return FALSE
+	return TRUE
 
 /mob/living/silicon/isSynthetic()
 	return 1
@@ -577,7 +577,7 @@ proc/is_blind(A)
 
 #undef SAFE_PERP
 
-/mob/proc/get_multitool(var/obj/item/device/multitool/P)
+/mob/proc/get_multitool(var/obj/item/weapon/tool/multitool/P)
 	if(istype(P))
 		return P
 

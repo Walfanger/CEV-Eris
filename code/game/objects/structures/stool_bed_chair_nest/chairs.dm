@@ -100,7 +100,7 @@
 			return
 
 		src.set_dir(turn(src.dir, 90))
-		playsound(src,'sound/effects/CREAK_Wood_Tree_Creak_10_Bright_Very_Subtle_mono.wav',100,1)
+		playsound(src,'sound/effects/CREAK_Wood_Tree_Creak_10_Bright_Very_Subtle_mono.ogg',100,1)
 		return
 
 /obj/structure/bed/chair/shuttle
@@ -151,7 +151,7 @@
 	return
 
 /obj/structure/bed/chair/office/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/stack) || istype(W, /obj/item/weapon/wirecutters))
+	if(istype(W,/obj/item/stack) || istype(W, /obj/item/weapon/tool/wirecutters))
 		return
 	..()
 
@@ -218,7 +218,7 @@
 	return
 
 /obj/structure/bed/chair/wood/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/stack) || istype(W, /obj/item/weapon/wirecutters))
+	if(istype(W,/obj/item/stack) || istype(W, /obj/item/weapon/tool/wirecutters))
 		return
 	..()
 

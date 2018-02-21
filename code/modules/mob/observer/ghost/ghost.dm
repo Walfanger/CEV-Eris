@@ -25,7 +25,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	var/ghostvision = 1 //is the ghost able to see things humans can't?
 	var/seedarkness = 1
 
-	var/obj/item/device/multitool/ghost_multitool
+	var/obj/item/weapon/tool/multitool/ghost_multitool
 	incorporeal_move = 1
 
 /mob/observer/ghost/New(mob/body)
@@ -404,8 +404,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(!MayRespawn(1, ANIMAL_SPAWN_DELAY))
 		return
 
-	var/turf/T = get_turf(src)
-	if(!T || (T.z in config.admin_levels))
+	if(isOnAdminLevel(src))
 		src << "<span class='warning'>You may not spawn as a mouse on this Z-level.</span>"
 		return
 
@@ -418,7 +417,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	var/obj/machinery/atmospherics/unary/vent_pump/vent_found
 	var/list/found_vents = list()
 	for(var/obj/machinery/atmospherics/unary/vent_pump/v in machines)
-		if(!v.welded && v.z == T.z)
+		if(!v.welded && v.z == src.z)
 			found_vents.Add(v)
 	if(found_vents.len)
 		vent_found = pick(found_vents)

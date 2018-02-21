@@ -58,16 +58,13 @@
 	return 1
 
 
-/obj/structure/table/MouseDrop_T(obj/O as obj, mob/user as mob)
+/obj/structure/table/MouseDrop_T(obj/item/O, mob/living/user)
 
-	if ((!( istype(O, /obj/item/weapon) ) || user.get_active_hand() != O))
+	if(user.get_active_hand() != O)
 		return ..()
 	if(isrobot(user))
 		return
-	user.drop_item()
-	if (O.loc != src.loc)
-		step(O, get_dir(O, src))
-	return
+	user.unEquip(O, src.loc)
 
 
 /obj/structure/table/affect_grab(var/mob/living/user, var/mob/living/target, var/state)
@@ -106,7 +103,7 @@
 	return TRUE
 
 
-/obj/structure/table/attackby(obj/item/W, mob/living/user, var/click_params)
+/obj/structure/table/attackby(obj/item/W, mob/living/user, var/params)
 	if(!istype(W))
 		return
 
@@ -131,8 +128,15 @@
 		user << SPAN_WARNING("There's nothing to put \the [W] on! Try adding plating to \the [src] first.")
 		return
 
-	user.drop_item(src.loc)
-	return
+	user.unEquip(W, src.loc)
+
+	var/list/click_params = params2list(params)
+	//Center the icon where the user clicked.
+	if(!click_params || !click_params["icon-x"] || !click_params["icon-y"])
+		return
+	//Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
+	W.pixel_x = Clamp(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
+	W.pixel_y = Clamp(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
+
 
 /obj/structure/table/attack_tk() // no telehulk sorry
-	return

@@ -106,12 +106,7 @@
 	return ..()
 
 /obj/machinery/alarm/New(var/loc, var/dir, var/building = 0)
-	..()
-
 	if(building)
-		if(loc)
-			src.loc = loc
-
 		if(dir)
 			src.set_dir(dir)
 
@@ -120,9 +115,11 @@
 		pixel_x = (dir & 3)? 0 : (dir == 4 ? -24 : 24)
 		pixel_y = (dir & 3)? (dir ==1 ? -24 : 24) : 0
 		update_icon()
-		return
 
-	first_run()
+	..()
+
+	if(!building)
+		first_run()
 
 /obj/machinery/alarm/proc/first_run()
 	alarm_area = get_area(src)
@@ -144,7 +141,7 @@
 
 /obj/machinery/alarm/initialize()
 	set_frequency(frequency)
-	if (!master_is_operating())
+	if(buildstage == 2 && !master_is_operating())
 		elect_master()
 
 /obj/machinery/alarm/process()
@@ -776,7 +773,7 @@
 
 	switch(buildstage)
 		if(2)
-			if(istype(W, /obj/item/weapon/screwdriver))  // Opening that Air Alarm up.
+			if(istype(W, /obj/item/weapon/tool/screwdriver))  // Opening that Air Alarm up.
 				//user << "You pop the Air Alarm's maintence panel open."
 				wiresexposed = !wiresexposed
 				user << "The wires have been [wiresexposed ? "exposed" : "unexposed"]"
@@ -785,7 +782,7 @@
 				update_icon()
 				return
 
-			if (wiresexposed && istype(W, /obj/item/weapon/wirecutters))
+			if (wiresexposed && istype(W, /obj/item/weapon/tool/wirecutters))
 				user.visible_message(SPAN_WARNING("[user] has cut the wires inside \the [src]!"), "You have cut the wires inside \the [src].")
 				playsound(src.loc, 'sound/items/Wirecutter.ogg', 50, 1)
 				new/obj/item/stack/cable_coil(get_turf(src), 5)
@@ -818,7 +815,7 @@
 					user << SPAN_WARNING("You need 5 pieces of cable to do wire \the [src].")
 					return
 
-			else if(istype(W, /obj/item/weapon/crowbar))
+			else if(istype(W, /obj/item/weapon/tool/crowbar))
 				user << "You start prying out the circuit."
 				playsound(src.loc, 'sound/items/Crowbar.ogg', 50, 1)
 				if(do_after(user,20))
@@ -836,7 +833,7 @@
 				update_icon()
 				return
 
-			else if(istype(W, /obj/item/weapon/wrench))
+			else if(istype(W, /obj/item/weapon/tool/wrench))
 				user << "You remove the fire alarm assembly from the wall!"
 				new /obj/item/frame/air_alarm(get_turf(user))
 				playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
@@ -925,8 +922,6 @@ FIRE ALARM
 					new_color = "#1024A9"
 				if(SEC_LEVEL_RED)
 					new_color = COLOR_RED
-				if(SEC_LEVEL_DELTA)
-					new_color = "#FF6633"
 			set_light(l_range = 1.5, l_power = 0.5, l_color = new_color)
 		src.overlays += image('icons/obj/monitors.dmi', "overlay_[num2seclevel(seclevel)]")
 
@@ -950,7 +945,7 @@ FIRE ALARM
 /obj/machinery/firealarm/attackby(obj/item/W as obj, mob/user as mob)
 	src.add_fingerprint(user)
 
-	if (istype(W, /obj/item/weapon/screwdriver) && buildstage == 2)
+	if (istype(W, /obj/item/weapon/tool/screwdriver) && buildstage == 2)
 		var/sound = wiresexposed ? 'sound/machines/Custom_screwdriveropen.ogg' : 'sound/machines/Custom_screwdriverclose.ogg'
 		playsound(src.loc, sound, 100, 1)
 		wiresexposed = !wiresexposed
@@ -960,13 +955,13 @@ FIRE ALARM
 	if(wiresexposed)
 		switch(buildstage)
 			if(2)
-				if (istype(W, /obj/item/device/multitool))
+				if (istype(W, /obj/item/weapon/tool/multitool))
 					src.detecting = !( src.detecting )
 					if (src.detecting)
 						user.visible_message(SPAN_NOTICE("\The [user] has reconnected [src]'s detecting unit!"), SPAN_NOTICE("You have reconnected [src]'s detecting unit."))
 					else
 						user.visible_message(SPAN_NOTICE("\The [user] has disconnected [src]'s detecting unit!"), SPAN_NOTICE("You have disconnected [src]'s detecting unit."))
-				else if (istype(W, /obj/item/weapon/wirecutters))
+				else if (istype(W, /obj/item/weapon/tool/wirecutters))
 					user.visible_message(SPAN_NOTICE("\The [user] has cut the wires inside \the [src]!"), SPAN_NOTICE("You have cut the wires inside \the [src]."))
 					new/obj/item/stack/cable_coil(get_turf(src), 5)
 					playsound(src.loc, 'sound/items/Wirecutter.ogg', 50, 1)
@@ -982,7 +977,7 @@ FIRE ALARM
 					else
 						user << SPAN_WARNING("You need 5 pieces of cable to wire \the [src].")
 						return
-				else if(istype(W, /obj/item/weapon/crowbar))
+				else if(istype(W, /obj/item/weapon/tool/crowbar))
 					user << "You pry out the circuit!"
 					playsound(src.loc, 'sound/items/Crowbar.ogg', 50, 1)
 					spawn(20)
@@ -997,7 +992,7 @@ FIRE ALARM
 					buildstage = 1
 					update_icon()
 
-				else if(istype(W, /obj/item/weapon/wrench))
+				else if(istype(W, /obj/item/weapon/tool/wrench))
 					user << "You remove the fire alarm assembly from the wall!"
 					new /obj/item/frame/fire_alarm(get_turf(user))
 					playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
@@ -1165,7 +1160,7 @@ FIRE ALARM
 		update_icon()
 
 /obj/machinery/firealarm/initialize()
-	if(z in config.contact_levels)
+	if(isContactLevel(src.z))
 		set_security_level(security_level? get_security_level() : "green")
 
 /*

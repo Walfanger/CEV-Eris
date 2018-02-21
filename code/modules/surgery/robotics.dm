@@ -17,13 +17,13 @@
 			return 0
 		if (affected.status & ORGAN_DESTROYED)
 			return 0
-		if (!(affected.status & ORGAN_ROBOT))
+		if (!(affected.robotic >= ORGAN_ROBOT))
 			return 0
 		return 1
 
 /datum/surgery_step/robotics/unscrew_hatch
 	allowed_tools = list(
-		/obj/item/weapon/screwdriver = 100,
+		/obj/item/weapon/tool/screwdriver = 100,
 		/obj/item/weapon/coin = 50,
 		/obj/item/weapon/material/kitchen/utensil/knife = 50
 	)
@@ -55,8 +55,8 @@
 
 /datum/surgery_step/robotics/open_hatch
 	allowed_tools = list(
-		/obj/item/weapon/retractor = 100,
-		/obj/item/weapon/crowbar = 100,
+		/obj/item/weapon/tool/retractor = 100,
+		/obj/item/weapon/tool/crowbar = 100,
 		/obj/item/weapon/material/kitchen/utensil = 50
 	)
 
@@ -87,8 +87,8 @@
 
 /datum/surgery_step/robotics/close_hatch
 	allowed_tools = list(
-		/obj/item/weapon/retractor = 100,
-		/obj/item/weapon/crowbar = 100,
+		/obj/item/weapon/tool/retractor = 100,
+		/obj/item/weapon/tool/crowbar = 100,
 		/obj/item/weapon/material/kitchen/utensil = 50
 	)
 
@@ -120,7 +120,7 @@
 
 /datum/surgery_step/robotics/repair_brute
 	allowed_tools = list(
-		/obj/item/weapon/weldingtool = 100,
+		/obj/item/weapon/tool/weldingtool = 100,
 		/obj/item/weapon/pickaxe/plasmacutter = 50
 	)
 
@@ -130,8 +130,8 @@
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			if(istype(tool,/obj/item/weapon/weldingtool))
-				var/obj/item/weapon/weldingtool/welder = tool
+			if(istype(tool,/obj/item/weapon/tool/weldingtool))
+				var/obj/item/weapon/tool/weldingtool/welder = tool
 				if(!welder.isOn() || !welder.remove_fuel(1,user))
 					return 0
 			return affected && affected.open == 2 && affected.brute_dam > 0 && target_zone != "mouth"
@@ -197,8 +197,8 @@
 /datum/surgery_step/robotics/fix_organ_robotic //For artificial organs
 	allowed_tools = list(
 	/obj/item/stack/nanopaste = 100,		\
-	/obj/item/weapon/bonegel = 30, 		\
-	/obj/item/weapon/screwdriver = 70,	\
+	/obj/item/weapon/tool/bonegel = 30, 		\
+	/obj/item/weapon/tool/screwdriver = 70,	\
 	)
 
 	min_duration = 70
@@ -265,7 +265,7 @@
 /datum/surgery_step/robotics/detatch_organ_robotic
 
 	allowed_tools = list(
-	/obj/item/device/multitool = 100
+	/obj/item/weapon/tool/multitool = 100
 	)
 
 	min_duration = 90
@@ -274,7 +274,7 @@
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		if(!(affected && (affected.status & ORGAN_ROBOT)))
+		if(!(affected && (affected.robotic >= ORGAN_ROBOT)))
 			return 0
 		if(affected.open != 2)
 			return 0
@@ -314,7 +314,7 @@
 
 /datum/surgery_step/robotics/attach_organ_robotic
 	allowed_tools = list(
-		/obj/item/weapon/screwdriver = 100,
+		/obj/item/weapon/tool/screwdriver = 100,
 	)
 
 	min_duration = 100
@@ -323,7 +323,7 @@
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		if(!(affected && (affected.status & ORGAN_ROBOT)))
+		if(!(affected && (affected.robotic >= ORGAN_ROBOT)))
 			return 0
 		if(affected.open != 2)
 			return 0
@@ -333,7 +333,7 @@
 		var/list/removable_organs = list()
 		for(var/organ in target.internal_organs_by_name)
 			var/obj/item/organ/I = target.internal_organs_by_name[organ]
-			if(I && (I.status & ORGAN_CUT_AWAY) && (I.status & ORGAN_ROBOT) && I.parent_organ == target_zone)
+			if(I && (I.status & ORGAN_CUT_AWAY) && (I.robotic >= ORGAN_ROBOT) && I.parent_organ == target_zone)
 				removable_organs |= organ
 
 		var/organ_to_replace = input(user, "Which organ do you want to reattach?") as null|anything in removable_organs
@@ -385,7 +385,7 @@
 			user << SPAN_DANGER("That brain is not usable.")
 			return SURGERY_FAILURE
 
-		if(!(affected.status & ORGAN_ROBOT))
+		if(!(affected.robotic >= ORGAN_ROBOT))
 			user << SPAN_DANGER("You cannot install a computer brain into a meat skull.")
 			return SURGERY_FAILURE
 

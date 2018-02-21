@@ -364,7 +364,7 @@
 
 	return null
 
-/obj/machinery/camera/proc/weld(var/obj/item/weapon/weldingtool/WT, var/mob/user)
+/obj/machinery/camera/proc/weld(var/obj/item/weapon/tool/weldingtool/WT, var/mob/user)
 
 	if(busy)
 		return 0
@@ -442,7 +442,7 @@
 
 /obj/machinery/camera/proc/nano_structure()
 	var/cam[0]
-	cam["name"] = strip_improper(sanitize(c_tag))
+	cam["name"] = sanitize(strip_improper(c_tag))
 	cam["deact"] = !can_use()
 	cam["camera"] = "\ref[src]"
 	cam["x"] = x
