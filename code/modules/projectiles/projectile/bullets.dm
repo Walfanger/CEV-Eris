@@ -1,4 +1,5 @@
 #define HUMAN_FUCKING_POWER     60 //damn this macros are so good
+
 #define TOTAL_FUCKING_POWER     200
 #define WALL_FUCKING_PRICE      100
 #define MACHINERY_FUCKING_PRICE 80
@@ -13,18 +14,19 @@
 	kill_count = 6//how much turfs can cross this projectile befor get fucked by gc
 	var/plasma_force = TOTAL_FUCKING_POWER
 
-/obj/item/projectile/plasma_charge/Move(new_loc)
-	world << "[src]/move([new_loc])"
-	. = ..(new_loc)
-	var/turf/A = new_loc
+obj/item/projectile/plasma_charge/Move()
+//	world << "[src]/move([new_loc])"
+	. = ..()
+	world << "Move() . = [.]"
+//	var/turf/A = src.loc
 	var/distance = get_dist(starting,loc)
 
-	if(isturf(A))
-		world << "isturf"
-		for(var/obj/O in A)
-			O.bullet_act(src)
-		for(var/mob/living/M in A)
-			attack_mob(M, distance)
+//	if(isturf(A))
+//		world << "isturf"
+	for(var/obj/O in src.loc.contents)
+		O.bullet_act(src)
+	for(var/mob/living/M in src.loc.contents)
+		attack_mob(M, distance)
 
 
 /obj/item/projectile/plasma_charge/proc/check_plasma_force()
@@ -106,7 +108,7 @@
 	if((bumped && !forced) || (A in permutated))
 		return FALSE
 
-	var/passthrough = 0 //if the projectile should continue flying
+	var/passthrough = FALSE //if the projectile should continue flying
 	var/distance = get_dist(starting,loc)
 
 	bumped = TRUE
@@ -119,7 +121,7 @@
 			var/obj/item/weapon/grab/G = locate() in M
 			if(G && G.state >= GRAB_NECK)
 				visible_message(SPAN_DANGER("\The [M] uses [G.affecting] as a shield!"))
-				if(Bump(G.affecting, forced=1))
+				if(Bump(G.affecting, forced = TRUE))
 					return //If Bump() returns 0 (keep going) then we continue on to attack M.
 
 			passthrough = !attack_mob(M, distance)
@@ -158,8 +160,6 @@
 	//stop flying
 	on_impact(A)
 
-	if(plasma_force <= 0)
-		qdel(src)
 	/*density = FALSE
 	invisibility = 101
 
